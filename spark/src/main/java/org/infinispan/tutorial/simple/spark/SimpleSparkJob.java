@@ -6,11 +6,15 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaDoubleRDD;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.api.java.function.VoidFunction;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.Configuration;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.spark.rdd.InfinispanJavaRDD;
+import scala.Tuple2;
 
 import java.io.Serializable;
 import java.net.InetAddress;
@@ -49,6 +53,13 @@ public class SimpleSparkJob {
 
       JavaPairRDD<Integer, Temperature> infinispanRDD = InfinispanJavaRDD.createInfinispanRDD(jsc, properties);
 
+      Function<Double, Double> celsiusToF = c -> c * 9 / 5 + 32;
+
+      infinispanRDD.values()
+            .map(Temperature::getValue)
+            .map(celsiusToF).filter(t -> t > 50)
+            .foreach(System.out::println);
+
       // Convert RDD to RDD of doubles
       JavaDoubleRDD javaDoubleRDD = infinispanRDD.values().mapToDouble(Temperature::getValue);
 
@@ -71,7 +82,7 @@ public class SimpleSparkJob {
    }
 
    @SuppressWarnings("unused")
-   static class Temperature implements Serializable {
+   public static class Temperature implements Serializable {
 
       private double value;
       private final String location;

@@ -18,6 +18,11 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
                     <executable>${project.basedir}/script.sh</executable>
+                    <arguments>
+			<argument>
+			  org.infinispan.tutorial.simple.spark.SimpleSparkJob
+			</argument>
+                    </arguments>
                 </configuration>
             </plugin>
         </plugins>

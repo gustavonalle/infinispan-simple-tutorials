@@ -9,5 +9,5 @@ function wait_for_ispn_on() {
 CONTAINER_ID=$(docker run -v $PWD:/usr/local/code -ti -d gustavonalle/infinispan-spark)
 wait_for_ispn_on $CONTAINER_ID
 echo "Server started, running job"
-docker exec -t $CONTAINER_ID /usr/local/spark/bin/spark-shell --jars /usr/local/code/target/infinispan-simple-tutorials-spark-1.0.0-SNAPSHOT.jar --class org.infinispan.tutorial.simple.spark.SimpleSparkJob --packages org.infinispan:infinispan-spark_2.10:0.1
+docker exec -t $CONTAINER_ID /usr/local/spark/bin/spark-shell --jars /usr/local/code/target/infinispan-simple-tutorials-spark-1.0.0-SNAPSHOT.jar --class $1 --packages org.infinispan:infinispan-spark_2.10:0.1
 docker kill $CONTAINER_ID
